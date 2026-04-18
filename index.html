@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>GAME HUB PRO MAX FINAL</title>
+<title>GAME HUB MAXPING PRO</title>
 
 <style>
 body{background:#0b0f1a;color:#fff;text-align:center;font-family:sans-serif}
@@ -10,34 +10,20 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 .hidden{display:none}
 
 #topbar{position:fixed;top:10px;right:10px;background:#111;padding:10px;border-radius:10px}
-#codeBox{position:fixed;top:80px;right:10px;background:#111;padding:10px;border-radius:10px}
-
 #historyBox{position:fixed;left:10px;top:10px;background:#111;padding:10px;border-radius:10px}
-#chatBox{position:fixed;right:10px;bottom:10px;background:#111;padding:10px;border-radius:10px;width:220px;height:250px;overflow:auto;font-size:12px}
+#chatBox{position:fixed;right:10px;bottom:10px;background:#111;padding:10px;width:200px;height:250px;overflow:auto;font-size:12px}
 
 #circle{width:100px;height:100px;border:3px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto}
 
 .dice3d{display:flex;justify-content:center;gap:10px;margin:10px}
-.cube{
-width:50px;height:50px;background:#0ff;
-display:flex;align-items:center;justify-content:center;
-font-weight:bold;border-radius:10px;
-transition:0.4s;
-box-shadow:0 0 15px #0ff;
-}
-.cube.roll{
-transform:scale(1.2) rotate(360deg);
-box-shadow:0 0 30px #0ff;
-}
+.cube{width:40px;height:40px;background:#0ff;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:8px}
 
 .red{color:red}
 .blue{color:#0ff}
 
-#gk{
-width:40px;height:40px;background:#0ff;
-position:absolute;bottom:10px;left:90px;
-transition:all 0.3s ease;
-}
+#gk{width:40px;height:40px;background:#0ff;position:absolute;bottom:10px;left:90px;transition:0.3s}
+
+.card{font-size:60px}
 </style>
 </head>
 
@@ -50,20 +36,13 @@ transition:all 0.3s ease;
 👤 <span id="userName"></span>
 </div>
 
-<!-- NHẬP CODE -->
-<div id="codeBox">
-<input id="giftCode" placeholder="Nhập code"><br>
-<button onclick="redeemCode()">Nhận thưởng</button>
-<p id="codeMsg"></p>
-</div>
-
 <div id="historyBox"><h4>📊 History</h4><div id="history"></div></div>
 <div id="chatBox"></div>
 
 <!-- LOGIN -->
 <div id="auth">
-<input id="u" placeholder="User"><br>
-<input id="p" type="password" placeholder="Pass"><br>
+<input id="u"><br>
+<input id="p" type="password"><br>
 <button onclick="register()">Register</button>
 <button onclick="login()">Login</button>
 </div>
@@ -72,13 +51,14 @@ transition:all 0.3s ease;
 <div id="menu" class="hidden">
 <button onclick="show('tx')">Táo/Sữa</button>
 <button onclick="show('pen')">Penalty</button>
+<button onclick="show('card')">Bài</button>
 <button onclick="show('rank')">BXH</button>
+<button id="adminBtn" class="hidden" onclick="show('admin')">Admin</button>
 </div>
 
 <!-- TX -->
 <div id="tx" class="hidden">
 <h3>Táo/Sữa</h3>
-
 <div id="circle">30</div>
 
 <div class="dice3d">
@@ -87,15 +67,12 @@ transition:all 0.3s ease;
 <div class="cube" id="d3">1</div>
 </div>
 
-<input id="betTX" placeholder="Cược">
+<input id="betTX">
+<button onclick="betTXGame('tao')">Táo</button>
+<div>💰 <span id="taoTotal">0</span></div>
 
-<button onclick="betTXGame('tao')">🍎 Táo</button>
-<button onclick="betTXGame('sua')">🥛 Sữa</button>
-
-<div>
-🍎 <span id="taoTotal">0</span> |
-🥛 <span id="suaTotal">0</span>
-</div>
+<button onclick="betTXGame('sua')">Sữa</button>
+<div>💰 <span id="suaTotal">0</span></div>
 
 <p id="txInfo"></p>
 <div id="road"></div>
@@ -105,41 +82,43 @@ transition:all 0.3s ease;
 
 <!-- PEN -->
 <div id="pen" class="hidden">
-<h3>⚽ Penalty</h3>
+<h3>Penalty</h3>
 
-<h4>🌾 Nông dân</h4>
-<button onclick="setBet(2000,15000)">Chọn</button>
-
-<h4>💼 Thương gia</h4>
-<button onclick="setBet(20000,150000)">Chọn</button>
-
-<h4>👑 Phú ông</h4>
-<button onclick="setBet(200000,500000)">Chọn</button>
+<button onclick="setBet(2000,15000)">Nông dân</button>
+<button onclick="setBet(20000,150000)">Thương gia</button>
+<button onclick="setBet(200000,500000)">Phú ông</button>
 
 <p id="betRange"></p>
-
-<input id="betP" placeholder="Nhập tiền">
+<input id="betP">
 
 <div style="width:220px;height:120px;border:2px solid #fff;margin:auto;position:relative">
 <div id="gk"></div>
 </div>
 
-<button onclick="penalty('left')">Trái</button>
-<button onclick="penalty('center')">Giữa</button>
-<button onclick="penalty('right')">Phải</button>
+<button onclick="penalty('left')">Left</button>
+<button onclick="penalty('center')">Center</button>
+<button onclick="penalty('right')">Right</button>
 
 <p id="resP"></p>
 <button onclick="show('menu')">Back</button>
 </div>
 
-<!-- RANK -->
-<div id="rank" class="hidden">
-<h3>🏆 BXH</h3>
-<h4>🔥 Top Thắng</h4>
-<div id="topWin"></div>
-<h4>💀 Top Thua</h4>
-<div id="topLose"></div>
+<!-- CARD -->
+<div id="card" class="hidden">
+<input id="betC" oninput="dealFirstCard()">
+<div class="card" id="cardShow">?</div>
+<button onclick="pick('low')">Low</button>
+<button onclick="pick('high')">High</button>
 <button onclick="show('menu')">Back</button>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="hidden">
+<h3>ADMIN</h3>
+Winrate <input id="rate"><button onclick="setRate()">SET</button><br>
+User <input id="target"><input id="money">
+<button onclick="addMoney()">+</button>
+<button onclick="subMoney()">-</button>
 </div>
 
 <script>
@@ -147,68 +126,50 @@ transition:all 0.3s ease;
 // ===== DATA =====
 let currentUser=null;
 let users=JSON.parse(localStorage.getItem("users"))||{};
+let winRate=50;
 
-// CODE thưởng
-let giftList={
-"Thangcuquenghic":10000,
-"Hoathanhque36":20000,
-"Gamebipbom":50000
-};
+if(!users.admin){
+users.admin={pass:"123",coin:999999,win:0,lose:0};
+}
 
 // ===== SAVE =====
 function save(){
 localStorage.setItem("users",JSON.stringify(users));
 }
 
-// ===== CODE =====
-function redeemCode(){
-let code=giftCode.value.trim();
-
-if(!giftList[code]){
-codeMsg.innerText="Code sai!";
-return;
-}
-
-if(!users[currentUser].usedCodes) users[currentUser].usedCodes=[];
-
-if(users[currentUser].usedCodes.includes(code)){
-codeMsg.innerText="Đã dùng rồi!";
-return;
-}
-
-let money=giftList[code];
-users[currentUser].coin+=money;
-users[currentUser].usedCodes.push(code);
-
-codeMsg.innerText=`+${money} 💰`;
-update();
-save();
-}
-
-// ===== MUSIC =====
-document.body.onclick=()=>bgm.play().catch(()=>{});
+// ===== CHAT BOT =====
+let fakeNames=["Huy","Nam","VIP","Pro"];
+setInterval(()=>{
+let name=fakeNames[Math.random()*fakeNames.length|0];
+let side=Math.random()>0.5?"Táo":"Sữa";
+chatBox.innerHTML=`<div>${name}: cược ${side}</div>`+chatBox.innerHTML;
+},2000);
 
 // ===== AUTH =====
 function register(){
+if(u.value==="admin") return alert("Không tạo admin");
 if(users[u.value])return;
-users[u.value]={pass:p.value,coin:5000,win:0,lose:0,usedCodes:[]};
+users[u.value]={pass:p.value,coin:5000,win:0,lose:0};
 save();
 }
 
 function login(){
 if(!users[u.value]||users[u.value].pass!==p.value)return alert("Sai");
+
 currentUser=u.value;
-show("menu");
-update();
+
+if(currentUser==="admin"){
+adminBtn.classList.remove("hidden");
+}
+
+show("menu");update();
 }
 
 // ===== UI =====
 function show(id){
-["auth","menu","tx","pen","rank"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+["auth","menu","tx","pen","card","admin"].forEach(x=>document.getElementById(x).classList.add("hidden"));
 document.getElementById(id).classList.remove("hidden");
-
 if(id==="tx")startTX();
-if(id==="rank")renderRank();
 }
 
 function update(){
@@ -217,41 +178,29 @@ userName.innerText=currentUser;
 }
 
 // ===== TX =====
-let txTimer,roadList=[],totalTao=0,totalSua=0,playerBet=null;
+let totalTao=0,totalSua=0,bet=null,roadList=[];
 
 function startTX(){
-clearInterval(txTimer);
-txTimer=30;
-circle.innerText=30;
-totalTao=0;
-totalSua=0;
-playerBet=null;
+bet=null;totalTao=0;totalSua=0;
 updateTotal();
 
-txTimer=setInterval(()=>{
-circle.innerText--;
-if(circle.innerText<=0){
-clearInterval(txTimer);
-endTX();
-startTX();
-}
+let t=30;
+circle.innerText=t;
+
+let timer=setInterval(()=>{
+circle.innerText=--t;
+if(t<=0){clearInterval(timer);endTX();startTX();}
 },1000);
 }
-
-setInterval(()=>{
-let amt=Math.random()*300|0;
-Math.random()>0.5?totalTao+=amt:totalSua+=amt;
-updateTotal();
-},2000);
 
 function betTXGame(type){
 let b=+betTX.value;
 if(!b||users[currentUser].coin<b)return;
 
-if(playerBet){txInfo.innerText="Chỉ 1 cửa";return;}
+if(bet){txInfo.innerText="Chỉ 1 cửa";return;}
 
 users[currentUser].coin-=b;
-playerBet={type,amount:b};
+bet={type,amount:b};
 
 type==="tao"?totalTao+=b:totalSua+=b;
 
@@ -263,99 +212,111 @@ taoTotal.innerText=totalTao;
 suaTotal.innerText=totalSua;
 }
 
-function rollDice(){
-[d1,d2,d3].forEach(x=>{
-x.classList.add("roll");
-setTimeout(()=>x.classList.remove("roll"),400);
-});
-}
-
 function endTX(){
-let roll=setInterval(rollDice,100);
-
-setTimeout(()=>{
-clearInterval(roll);
-
 let a=r(),b=r(),c=r();
 d1.innerText=a;d2.innerText=b;d3.innerText=c;
 
 let res=(a+b+c)>10?"tao":"sua";
+
+if(Math.random()*100>winRate){
+res=res==="tao"?"sua":"tao";
+}
 
 roadList.push(res);
 if(roadList.length>20)roadList.shift();
 
 road.innerHTML=roadList.map(x=>`<span class="${x==="tao"?"red":"blue"}">●</span>`).join("");
 
-if(playerBet){
-if(playerBet.type===res){
-users[currentUser].coin+=playerBet.amount*2;
-users[currentUser].win++;
+if(bet){
+if(bet.type===res){
+users[currentUser].coin+=bet.amount*2;
 txInfo.innerText="Thắng";
 }else{
-users[currentUser].lose++;
 txInfo.innerText="Thua";
 }
 }
 
 update();save();
-
-},1000);
 }
 
 // ===== PEN =====
 let minBet=0,maxBet=0;
 
 function setBet(min,max){
-minBet=min;
-maxBet=max;
-betRange.innerText=`Cược: ${min} - ${max}`;
-}
-
-function moveGK(p){
-if(p==="left") gk.style.left="20px";
-if(p==="center") gk.style.left="90px";
-if(p==="right") gk.style.left="160px";
+minBet=min;maxBet=max;
+betRange.innerText=`${min}-${max}`;
 }
 
 function penalty(dir){
 let b=+betP.value;
 
-if(!minBet)return alert("Chọn mức cược");
-if(!b||b<minBet||b>maxBet)return alert("Sai mức");
+if(!b||b<minBet||b>maxBet)return alert("Sai cược");
 if(users[currentUser].coin<b)return;
 
 users[currentUser].coin-=b;
 
 let gkPos=["left","center","right"][Math.random()*3|0];
-moveGK(gkPos);
 
-setTimeout(()=>{
-if(dir===gkPos){
-resP.innerText="Cản ❌";
-users[currentUser].lose++;
-}else{
-resP.innerText="Vào ⚽";
+if(dir!==gkPos){
 users[currentUser].coin+=b*2;
-users[currentUser].win++;
-}
+resP.innerText="Goal";
+}else resP.innerText="Miss";
+
 update();
-},300);
 }
 
-// ===== RANK =====
-function renderRank(){
-let arr=Object.keys(users).map(u=>({name:u,...users[u]}));
+// ===== CARD =====
+let deck=[],i=0,currentCard=null,cardDealt=false;
 
-topWin.innerHTML=arr.sort((a,b)=>b.win-a.win).slice(0,5)
-.map(x=>`<p>${x.name}: ${x.win}</p>`).join("");
-
-topLose.innerHTML=arr.sort((a,b)=>b.lose-a.lose).slice(0,5)
-.map(x=>`<p>${x.name}: ${x.lose}</p>`).join("");
+function build(){
+deck=["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
+.sort(()=>Math.random()-0.5);
+i=0;
 }
+build();
+
+function val(c){
+return c==="A"?1:c==="J"?11:c==="Q"?12:c==="K"?13:+c;
+}
+
+function dealFirstCard(){
+if(cardDealt)return;
+currentCard=deck[i++];
+cardDealt=true;
+cardShow.innerText=currentCard;
+}
+
+function pick(type){
+let b=+betC.value;
+if(!b||users[currentUser].coin<b)return;
+
+let next=deck[i++];
+
+users[currentUser].coin-=b;
+
+let win=
+(type==="high" && val(next)>val(currentCard))||
+(type==="low" && val(next)<val(currentCard));
+
+if(win){
+users[currentUser].coin+=b*2;
+}
+
+cardShow.innerText=next;
+currentCard=null;
+cardDealt=false;
+
+update();save();
+}
+
+// ===== ADMIN =====
+function setRate(){winRate=+rate.value;}
+function addMoney(){if(users[target.value]) users[target.value].coin+=+money.value;save();}
+function subMoney(){if(users[target.value]) users[target.value].coin-=+money.value;save();}
 
 function r(){return Math.floor(Math.random()*6)+1;}
 
 </script>
 
 </body>
-  </html>
+</html>
