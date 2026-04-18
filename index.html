@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>GAME HUB MAXPING PRO</title>
+<title>GAME HUB MAXPING PRO FINAL</title>
 
 <style>
 body{background:#0b0f1a;color:#fff;text-align:center;font-family:sans-serif}
@@ -11,12 +11,12 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 
 #topbar{position:fixed;top:10px;right:10px;background:#111;padding:10px;border-radius:10px}
 #historyBox{position:fixed;left:10px;top:10px;background:#111;padding:10px;border-radius:10px}
-#chatBox{position:fixed;right:10px;bottom:10px;background:#111;padding:10px;width:200px;height:250px;overflow:auto;font-size:12px}
+#chatBox{position:fixed;right:10px;bottom:10px;background:#111;padding:10px;width:220px;height:250px;overflow:auto;font-size:12px}
 
 #circle{width:100px;height:100px;border:3px solid #0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto}
 
 .dice3d{display:flex;justify-content:center;gap:10px;margin:10px}
-.cube{width:40px;height:40px;background:#0ff;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:8px}
+.cube{width:45px;height:45px;background:#0ff;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold}
 
 .red{color:red}
 .blue{color:#0ff}
@@ -41,8 +41,8 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 
 <!-- LOGIN -->
 <div id="auth">
-<input id="u"><br>
-<input id="p" type="password"><br>
+<input id="u" placeholder="User"><br>
+<input id="p" type="password" placeholder="Pass"><br>
 <button onclick="register()">Register</button>
 <button onclick="login()">Login</button>
 </div>
@@ -51,8 +51,7 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 <div id="menu" class="hidden">
 <button onclick="show('tx')">Táo/Sữa</button>
 <button onclick="show('pen')">Penalty</button>
-<button onclick="show('card')">Bài</button>
-<button onclick="show('rank')">BXH</button>
+<button onclick="show('card')">Bài Tây</button>
 <button id="adminBtn" class="hidden" onclick="show('admin')">Admin</button>
 </div>
 
@@ -67,11 +66,12 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 <div class="cube" id="d3">1</div>
 </div>
 
-<input id="betTX">
-<button onclick="betTXGame('tao')">Táo</button>
+<input id="betTX" placeholder="Nhập cược">
+
+<button onclick="betTXGame('tao')">🍎 Táo</button>
 <div>💰 <span id="taoTotal">0</span></div>
 
-<button onclick="betTXGame('sua')">Sữa</button>
+<button onclick="betTXGame('sua')">🥛 Sữa</button>
 <div>💰 <span id="suaTotal">0</span></div>
 
 <p id="txInfo"></p>
@@ -89,7 +89,7 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 <button onclick="setBet(200000,500000)">Phú ông</button>
 
 <p id="betRange"></p>
-<input id="betP">
+<input id="betP" placeholder="Nhập tiền">
 
 <div style="width:220px;height:120px;border:2px solid #fff;margin:auto;position:relative">
 <div id="gk"></div>
@@ -105,20 +105,37 @@ button,input{padding:10px;margin:5px;border-radius:8px;border:none}
 
 <!-- CARD -->
 <div id="card" class="hidden">
-<input id="betC" oninput="dealFirstCard()">
+<h3>🃏 HIGH / LOW</h3>
+
+<input id="betC" placeholder="Cược" oninput="dealFirstCard()">
+
 <div class="card" id="cardShow">?</div>
-<button onclick="pick('low')">Low</button>
-<button onclick="pick('high')">High</button>
+
+<button onclick="pick('low')">Nhỏ hơn</button>
+<button onclick="pick('high')">Lớn hơn</button>
+
+<p id="resC"></p>
+
 <button onclick="show('menu')">Back</button>
 </div>
 
 <!-- ADMIN -->
 <div id="admin" class="hidden">
-<h3>ADMIN</h3>
-Winrate <input id="rate"><button onclick="setRate()">SET</button><br>
-User <input id="target"><input id="money">
+<h3>ADMIN PANEL</h3>
+
+Winrate:
+<input id="rate"><button onclick="setRate()">SET</button>
+
+<br><br>
+
+User:
+<input id="target">
+<input id="money">
+
 <button onclick="addMoney()">+</button>
 <button onclick="subMoney()">-</button>
+
+<button onclick="show('menu')">Back</button>
 </div>
 
 <script>
@@ -128,9 +145,8 @@ let currentUser=null;
 let users=JSON.parse(localStorage.getItem("users"))||{};
 let winRate=50;
 
-if(!users.admin){
-users.admin={pass:"123",coin:999999,win:0,lose:0};
-}
+// FIX ADMIN LUÔN TỒN TẠI
+users["admin"]={pass:"123",coin:999999,win:0,lose:0};
 
 // ===== SAVE =====
 function save(){
@@ -149,6 +165,7 @@ chatBox.innerHTML=`<div>${name}: cược ${side}</div>`+chatBox.innerHTML;
 function register(){
 if(u.value==="admin") return alert("Không tạo admin");
 if(users[u.value])return;
+
 users[u.value]={pass:p.value,coin:5000,win:0,lose:0};
 save();
 }
@@ -162,7 +179,8 @@ if(currentUser==="admin"){
 adminBtn.classList.remove("hidden");
 }
 
-show("menu");update();
+show("menu");
+update();
 }
 
 // ===== UI =====
@@ -268,12 +286,12 @@ update();
 // ===== CARD =====
 let deck=[],i=0,currentCard=null,cardDealt=false;
 
-function build(){
+function buildDeck(){
 deck=["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
 .sort(()=>Math.random()-0.5);
 i=0;
 }
-build();
+buildDeck();
 
 function val(c){
 return c==="A"?1:c==="J"?11:c==="Q"?12:c==="K"?13:+c;
@@ -300,6 +318,9 @@ let win=
 
 if(win){
 users[currentUser].coin+=b*2;
+resC.innerText="Thắng";
+}else{
+resC.innerText="Thua";
 }
 
 cardShow.innerText=next;
